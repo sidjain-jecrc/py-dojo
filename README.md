@@ -1,4 +1,4 @@
-# Python Coding Practice
+# py-dojo
 
 A lightweight, AI-assisted environment for practicing real-world Python coding problems. Problems come with a skeleton and pre-written test cases — you just write the solution and run the tests.
 
@@ -19,7 +19,7 @@ A lightweight, AI-assisted environment for practicing real-world Python coding p
 
 ```bash
 git clone <repo-url>
-cd python_practice
+cd py-dojo
 ```
 
 No dependencies. No virtual environment needed. The runner uses only the standard library.
@@ -108,7 +108,7 @@ Claude will create the problem folder, skeleton, and test cases for you. Then ju
 ## Project structure
 
 ```
-python_practice/
+py-dojo/
 ├── README.md
 ├── runner.py          # Test runner — do not modify
 └── problems/

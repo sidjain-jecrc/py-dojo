@@ -20,5 +20,4 @@ def solve(nums: list[int], target: int) -> list[int]:
         if target - num in target_indice_dict:
             return [target_indice_dict[target - num], i]
         target_indice_dict[num] = i
-
-    raise NotImplementedError
+    return [-1, -1]
