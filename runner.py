@@ -108,6 +108,27 @@ def run_tests(problem_name: str):
         print(f"  -- {failed} failed")
     print(f"{'='*55}\n")
 
+    # Show optimal approach hint if available and all tests passed
+    if failed == 0:
+        hints_path = problem_dir / "hints.py"
+        if hints_path.exists():
+            try:
+                hints_mod = load_module(hints_path, "hints")
+                hint = getattr(hints_mod, "HINT", None)
+                if hint:
+                    print(f"{'='*55}")
+                    print(f"  Optimal Approach")
+                    print(f"{'='*55}")
+                    print(f"  Approach: {hint.get('approach', 'N/A')}")
+                    print(f"  Time:     {hint.get('time_complexity', 'N/A')}")
+                    print(f"  Space:    {hint.get('space_complexity', 'N/A')}")
+                    print(f"\n  Reasoning:")
+                    for line in hint.get("reasoning", "").strip().splitlines():
+                        print(f"  {line}")
+                    print(f"{'='*55}\n")
+            except Exception:
+                pass
+
     sys.exit(0 if failed == 0 else 1)
 
 

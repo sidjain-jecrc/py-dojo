@@ -22,7 +22,7 @@
 #
 # Example:
 #   events = [
-#       {"case_id": "A1", "timestamp": "2024-01-01T09:00:00", "event_type": "filed",        "severity": "low"},
+#       {"case_id": "A1", "timestamp": "2024-01-01T09:00:00", "event_type": "filed", "severity": "low"},
 #       {"case_id": "A1", "timestamp": "2024-01-02T10:00:00", "event_type": "legal_review", "severity": "high"},
 #   ]
 #   Output: {
@@ -33,8 +33,25 @@
 #       }
 #   }
 # ============================================================
+from collections import defaultdict
 
 
 def build_case_summaries(events: list[dict]) -> dict[str, dict]:
     # Your solution here
+    case_summary = {}
+
+    # if we sort the events by event timestamp in descending order, we will get the latest event type
+    sorted_events = sorted(events, key=lambda e: (-e["timestamp"], e["case_id"]))
+
+    # need case id and severity counter in a dictionary
+    case_severity_count = defaultdict(int)
+    for event in sorted_events:
+        case_id = event["case_id"]
+        severity = event["severity"]
+
+        if severity == "high":
+            case_severity_count[case_id] += 1
+
+
+
     raise NotImplementedError
