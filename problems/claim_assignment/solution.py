@@ -42,6 +42,26 @@
 
 def assign_claims(claims: list[dict], specialists: list[dict]) -> dict[str, str]:
 
+    assignment = {}
+
+    sorted_claims = sorted(claims, key=lambda x: (-x["complexity"], x["claim_id"]))
+
     # go through the claims one by one
-    
-    raise NotImplementedError
+    for claim in sorted_claims:
+        required_skills = claim["required_skills"]
+
+        eligible = []
+        for specialist in specialists:
+            if required_skills.issubset(specialist["skills"]):
+                eligible.append(specialist)
+
+        if not eligible:
+            continue  # no assignment possible
+
+        chosen = min(eligible, key=lambda s: (s["current_load"], s["specialist_id"]))
+        assignment[claim["claim_id"]] = chosen["specialist_id"]
+
+        # Update load after assignment
+        chosen["current_load"] += claim["complexity"]
+
+    return assignment

@@ -34,9 +34,10 @@ TEST_CASES = [
         "expected": {"C1": "alice", "C2": "bob"},
     },
     {
-        # Tie-break by specialist_id when loads are equal throughout.
+        # Tie-break by specialist_id when loads are equal at assignment time.
         # "anna" < "bob" < "carol" lexicographically.
-        # All have load 0 and all skills → anna always wins every claim.
+        # C1: anna=0, bob=0, carol=0 → anna (lex), anna load → 1
+        # C2: anna=1, bob=0, carol=0 → bob (lowest load, then lex of {bob,carol})
         "description": "Lexicographic tie-break — same load throughout",
         "fn": "assign_claims",
         "args": [
@@ -50,7 +51,7 @@ TEST_CASES = [
                 {"specialist_id": "bob",   "skills": {"x"}, "current_load": 0},
             ],
         ],
-        "expected": {"C1": "anna", "C2": "anna"},
+        "expected": {"C1": "anna", "C2": "bob"},
     },
     {
         # Specialist with a non-zero starting load should be skipped

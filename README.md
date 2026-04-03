@@ -104,6 +104,9 @@ Claude will create the problem folder, skeleton, and test cases for you. Then ju
 | Claim Assignment Balancing | `claim_assignment` | Assign claims to specialists while balancing workloads |
 | Case Event Summary Builder | `case_event_summary` | Summarise case events and flag cases for escalation |
 | Workflow Dependency Validation | `workflow_validation` | Detect cycles in task dependencies and return a valid execution order |
+| Document Package Completeness Checker | `doc_completeness` | Validate that all required documents are present for a claim |
+| Duplicate Claimant Clustering | `claimant_clustering` | Group claimant records that belong to the same real-world person |
+| Tenant API Usage Alert | `api_usage_alert` | Flag tenants whose usage exceeds a threshold in any 60-minute rolling window |
 
 ---
 
