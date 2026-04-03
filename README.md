@@ -102,6 +102,8 @@ Claude will create the problem folder, skeleton, and test cases for you. Then ju
 |---------|--------|-------------|
 | Two Sum | `two_sum` | Find indices of two numbers that add up to a target |
 | Claim Assignment Balancing | `claim_assignment` | Assign claims to specialists while balancing workloads |
+| Case Event Summary Builder | `case_event_summary` | Summarise case events and flag cases for escalation |
+| Workflow Dependency Validation | `workflow_validation` | Detect cycles in task dependencies and return a valid execution order |
 
 ---
 

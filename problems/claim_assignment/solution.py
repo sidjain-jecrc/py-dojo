@@ -41,5 +41,7 @@
 
 
 def assign_claims(claims: list[dict], specialists: list[dict]) -> dict[str, str]:
-    # Your solution here
+
+    # go through the claims one by one
+    
     raise NotImplementedError
