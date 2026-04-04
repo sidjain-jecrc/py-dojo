@@ -107,6 +107,12 @@ Claude will create the problem folder, skeleton, and test cases for you. Then ju
 | Document Package Completeness Checker | `doc_completeness` | Validate that all required documents are present for a claim |
 | Duplicate Claimant Clustering | `claimant_clustering` | Group claimant records that belong to the same real-world person |
 | Tenant API Usage Alert | `api_usage_alert` | Flag tenants whose usage exceeds a threshold in any 60-minute rolling window |
+| Fair Queue Scheduler | `fair_queue_scheduler` | Schedule jobs across tenants fairly — round-robin with oldest-first ordering |
+| Policy Hierarchy Exposure Calculator | `policy_exposure` | Compute total subtree exposure for every node in a policy tree |
+| Config Inheritance Resolver | `config_resolver` | Merge global, tenant, and user config dicts respecting explicit None overrides |
+| Specialist Availability Matching | `specialist_matching` | Assign tasks to specialists respecting skills, time slots, and earliest-start preference |
+| Nested Claim Payload Flattener | `payload_flattener` | Flatten nested dicts and lists into dot-separated key-value pairs |
+| Alert Deduplication Engine | `alert_deduplication` | Collapse repeated alerts within a 15-minute window into one logical alert |
 
 ---
 
