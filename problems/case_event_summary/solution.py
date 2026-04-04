@@ -34,24 +34,41 @@
 #   }
 # ============================================================
 from collections import defaultdict
+from xmlrpc.client import Boolean
 
 
 def build_case_summaries(events: list[dict]) -> dict[str, dict]:
-    # Your solution here
-    case_summary = {}
 
-    # if we sort the events by event timestamp in descending order, we will get the latest event type
-    sorted_events = sorted(events, key=lambda e: (-e["timestamp"], e["case_id"]))
+    summary = {}
 
-    # need case id and severity counter in a dictionary
-    case_severity_count = defaultdict(int)
-    for event in sorted_events:
+    # pass through all the events once to get severity counter and store the latest event
+    for event in events:
         case_id = event["case_id"]
-        severity = event["severity"]
 
-        if severity == "high":
-            case_severity_count[case_id] += 1
+        if case_id not in summary:
+            summary[case_id] = {
+                "latest_timestamp": event["timestamp"],
+                "latest_event_type": event["event_type"],
+                "high_severity_count": 0
+            }
 
+        if event["timestamp"] > summary[case_id]["latest_timestamp"]:
+            summary[case_id]["latest_timestamp"] = event["timestamp"]
+            summary[case_id]["latest_event_type"] = event["event_type"]
 
+        if event["severity"] == "high":
+            summary[case_id]["high_severity_count"] += 1
 
-    raise NotImplementedError
+    result = {}
+    for case_id, data in summary.items():
+        latest_event_type = data["latest_event_type"]
+        high_count = data["high_severity_count"]
+        escalated = high_count >= 3 or latest_event_type == "legal_review"
+
+        result[case_id] = {
+            "latest_event_type": latest_event_type,
+            "high_severity_count": high_count,
+            "escalate": escalated
+        }
+
+    return result
