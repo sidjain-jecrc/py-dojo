@@ -34,8 +34,30 @@
 #   - A tenant may appear many times across events.
 #   - If no tenant is flagged, return [].
 # ============================================================
+from collections import deque, defaultdict
 
 
 def find_flagged_tenants(events: list[dict], threshold: int) -> list[str]:
-    # Your solution here
-    raise NotImplementedError
+
+    flagged_tenants = set()
+    tenant_window_sum = defaultdict(int)
+
+    sorted_events = sorted(events, key=lambda e: (e["tenant_id"], e["timestamp"]))
+    tenant_window = defaultdict(deque)  # deque of (timestamp, units_used)
+
+    for event in sorted_events:
+        tenant_id = event["tenant_id"]
+        now = event["timestamp"]
+
+        # evict events that have fallen outside the 60-minute window
+        while tenant_window[tenant_id] and tenant_window[tenant_id][0][0] <= now - 60:
+            _, old_units = tenant_window[tenant_id].popleft()
+            tenant_window_sum[tenant_id] -= old_units
+
+        tenant_window_sum[tenant_id] += event["units_used"]
+        tenant_window[tenant_id].append((now, event["units_used"]))
+
+        if tenant_window_sum[tenant_id] > threshold:
+            flagged_tenants.add(tenant_id)
+
+    return sorted(flagged_tenants)

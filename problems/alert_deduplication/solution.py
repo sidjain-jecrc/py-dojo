@@ -41,8 +41,42 @@
 #       1
 #   )
 # ============================================================
+from collections import defaultdict
+from collections import deque
 
 
 def deduplicate_alerts(alerts: list[dict]) -> tuple[list[dict], int]:
-    # Your solution here
-    raise NotImplementedError
+
+    # result set containing dedup alerts
+    result = []
+
+    # keeping count of alerts dropped
+    dropped_alerts = []
+
+    # sort the alerts by timestamp, tenant_id and then alert_type
+    sorted_alerts = sorted(alerts, key=lambda a: (a["timestamp"],a["tenant_id"],a["alert_type"]))
+
+    # tuple(tenant_id, alert_type) -> latest timestamp
+    last_emitted = defaultdict(int)
+
+    # go over the alerts one by one
+    for alert in sorted_alerts:
+        tenant_id = alert["tenant_id"]
+        alert_type = alert["alert_type"]
+        timestamp = alert["timestamp"]
+
+        if (tenant_id, alert_type) not in last_emitted:
+            last_emitted[(tenant_id, alert_type)] = timestamp
+            result.append(alert)
+        else:
+            # if we have seen this alert before, check the dedup rule
+            if timestamp - last_emitted[(tenant_id, alert_type)] <= 15:
+                # means it's a duplicate and needs to be dropped, increase drop count
+                dropped_alerts.append(alert)
+            else:
+                # update the latest timestamp of the existing combination
+                last_emitted[(tenant_id, alert_type)] = timestamp
+                result.append(alert)
+
+
+    return result, len(dropped_alerts)
