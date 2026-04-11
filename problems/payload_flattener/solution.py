@@ -36,7 +36,22 @@
 #   }
 # ============================================================
 
-
 def flatten_payload(payload: dict, separator: str = ".") -> dict:
     # Your solution here
-    raise NotImplementedError
+    result = {}
+
+    def flatten(x, parent=''):
+        # If the current element is a dictionary, recurse
+        if type(x) is dict:
+            for a in x:
+                flatten(x[a], parent + a + separator)
+        # If it's a list, handle by index (optional)
+        elif type(x) is list:
+            for i, a in enumerate(x):
+                flatten(a, parent + str(i) + separator)
+        # If it's a value, add to the output dictionary
+        else:
+            result[parent[:-len(separator)]] = x
+
+    flatten(payload)
+    return result

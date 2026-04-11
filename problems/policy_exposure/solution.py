@@ -31,8 +31,15 @@
 #     A    = 5
 #     C    = 8
 # ============================================================
-
-
 def calculate_exposures(root: dict) -> dict[str, int]:
-    # Your solution here
-    raise NotImplementedError
+    result = {}
+
+    def dfs(node: dict) -> int:
+        total = node["base_exposure"]
+        for child in node["children"]:
+            total += dfs(child)
+        result[node["policy_id"]] = total
+        return total
+
+    dfs(root)
+    return result

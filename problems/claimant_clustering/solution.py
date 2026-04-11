@@ -38,8 +38,63 @@
 #   ]
 #   Output: [["R1", "R2"], ["R3"]]
 # ============================================================
+from collections import defaultdict
 
 
 def cluster_claimants(records: list[dict]) -> list[list[str]]:
-    # Your solution here
-    raise NotImplementedError
+
+    # --- Union-Find helpers ---
+    parent = {}
+
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]  # path compression
+            x = parent[x]
+        return x
+
+    def union(a, b):
+        ra, rb = find(a), find(b)
+        if ra != rb:
+            parent[ra] = rb
+
+    # Initialise each record as its own set
+    for r in records:
+        parent[r["record_id"]] = r["record_id"]
+
+    # Lookup dicts: first record seen with a given key
+    phone_map = {}
+    email_map = {}
+    name_dob_map = {}
+
+    for r in records:
+        rid = r["record_id"]
+
+        # Phone match
+        ph = r["phone"]
+        if ph in phone_map:
+            union(rid, phone_map[ph])
+        else:
+            phone_map[ph] = rid
+
+        # Email match
+        em = r["email"]
+        if em in email_map:
+            union(rid, email_map[em])
+        else:
+            email_map[em] = rid
+
+        # Normalised name + dob match
+        key = (r["name"].strip().lower(), r["dob"])
+        if key in name_dob_map:
+            union(rid, name_dob_map[key])
+        else:
+            name_dob_map[key] = rid
+
+    # Group by root representative
+    clusters = defaultdict(list)
+    for r in records:
+        clusters[find(r["record_id"])].append(r["record_id"])
+
+    # Sort each cluster, then sort the outer list by first element
+    result = sorted(sorted(c) for c in clusters.values())
+    return result

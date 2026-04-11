@@ -53,5 +53,46 @@ def assign_tasks(
     specialists: list[dict],
     tasks: list[dict],
 ) -> list[tuple[str, str, int, int]]:
-    # Your solution here
-    raise NotImplementedError
+
+    result_set = []
+    tasks.sort(key=lambda x: (x["preferred_start"], x["task_id"]))
+
+    for task in tasks:
+        required_skill = task["required_skill"]
+        duration = task["duration"]
+        preferred_start = task["preferred_start"]
+
+        # (specialist_id, candidate_start, candidate_end, original_slot)
+        eligible_specialists = []
+        for specialist in specialists:
+            if required_skill in specialist["skills"]:
+                for slot in specialist["available"]:
+                    candidate_start = max(preferred_start, slot[0])
+                    candidate_end = candidate_start + duration
+                    if candidate_end <= slot[1]:
+                        eligible_specialists.append((specialist["specialist_id"], candidate_start, candidate_end, slot))
+                        break  # slots are sorted; first valid slot is earliest
+
+        if not eligible_specialists:
+            continue
+
+        eligible_specialists.sort(key=lambda x: (x[1], x[0]))
+        winner_id, assigned_start, assigned_end, used_slot = eligible_specialists[0]
+
+        # Split the used slot, discarding zero-length fragments
+        winner = next(sp for sp in specialists if sp["specialist_id"] == winner_id)
+        new_slots = []
+        for s in winner["available"]:
+            if s == used_slot:
+                if used_slot[0] < assigned_start:
+                    new_slots.append([used_slot[0], assigned_start])
+                if assigned_end < used_slot[1]:
+                    new_slots.append([assigned_end, used_slot[1]])
+            else:
+                new_slots.append(s)
+        winner["available"] = new_slots
+
+        result_set.append((task["task_id"], winner_id, assigned_start, assigned_end))
+
+    result_set.sort(key=lambda x: (x[2], x[0]))
+    return result_set

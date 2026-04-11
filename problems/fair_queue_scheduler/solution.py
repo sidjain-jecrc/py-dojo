@@ -38,8 +38,27 @@
 #
 #   Output: ["A1", "B1", "C1", "A2"]
 # ============================================================
-
+from collections import defaultdict
+from collections import deque
 
 def schedule_jobs(jobs: list[dict]) -> list[str]:
-    # Your solution here
-    raise NotImplementedError
+
+    tenant_job = defaultdict(list)
+    for job in jobs:
+        tenant_job[job["tenant_id"]].append((job["created_at"],job["job_id"]))
+
+    queue = {}
+    for t_id, job_list in tenant_job.items():
+        job_list.sort()
+        queue[t_id] = deque(job_list)
+
+    schedule = []
+    while queue:
+        round_order = sorted(queue.keys(), key=lambda tid: (queue[tid][0][0], tid))
+        for tenant_id in round_order:
+            _, job_id = queue[tenant_id].popleft()
+            schedule.append(job_id)
+            if len(queue[tenant_id]) == 0:
+                queue.pop(tenant_id)
+
+    return schedule

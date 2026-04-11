@@ -39,5 +39,16 @@ def resolve_config(
     tenant_overrides: dict,
     user_overrides: dict,
 ) -> dict:
-    # Your solution here
-    raise NotImplementedError
+    effective_config = {}
+
+    for key, value in global_defaults.items():
+        effective_config[key] = value
+
+    for key, value in tenant_overrides.items():
+        effective_config[key] = value
+
+    for key, value in user_overrides.items():
+        effective_config[key] = value
+
+    return effective_config
+ 
